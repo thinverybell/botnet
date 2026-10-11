@@ -1,0 +1,13 @@
+syntax = "proto3";
+package ryzenc2;
+// Placeholder for future grpcio generation
+service BotService {
+  rpc ListBots (Empty) returns (BotList);
+  rpc RegisterBot (Bot) returns (Ack);
+  rpc Heartbeat (HeartbeatRequest) returns (Ack);
+}
+message Empty {}
+message Ack { bool ok = 1; }
+message Bot { string uuid = 1; string os = 2; string status = 3; }
+message BotList { repeated Bot bots = 1; }
+message HeartbeatRequest { string uuid = 1; string status = 2; }
