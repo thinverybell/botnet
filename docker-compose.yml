@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  panel:
+    build: .
+    ports: ["8080:8080"]
+    volumes: ["./data:/opt/ryzenc2/data", "./logs:/opt/ryzenc2/logs"]
+    env_file: .env
