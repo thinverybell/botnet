@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: ryzenc2}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: ryzenc2}}
+  template:
+    metadata: {labels: {app: ryzenc2}}
+    spec:
+      containers:
+      - name: ryzenc2
+        image: ryzenc2:8.0
+        ports: [{containerPort: 8080}]

@@ -1,0 +1,1 @@
+# Proxy pool cache - one per line: ip:port or socks5://ip:port

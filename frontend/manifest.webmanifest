@@ -1,0 +1,13 @@
+{
+  "name": "RyzenC2 PROMAX",
+  "short_name": "RyzenC2",
+  "description": "C2 Panel PROMAX v8 — authorized lab use",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e17",
+  "theme_color": "#0a0e17",
+  "lang": "vi",
+  "icons": [
+    { "src": "static/img/logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

